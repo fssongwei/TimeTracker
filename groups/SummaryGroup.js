@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import PieChart from "../components/PieChart";
-import HeaderText from "../components/HeaderText";
 
 const SummaryGroup = () => {
   return (

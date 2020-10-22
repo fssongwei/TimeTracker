@@ -11,9 +11,9 @@ Timer:
 TimerList
 
 1. 左滑菜单：快速启动正计时和倒计时
-2. 右划菜单：编辑和删除功能
-   1. 编辑页面
-3. 将 TimerList 存入 storage / 从 storage 取出 TimerList
+2. 右划菜单：编辑和删除功能 (done)
+   1. 编辑页面 (done)
+3. 将 TimerList 存入 storage / 从 storage 取出 TimerList (done)
 
 Analysis
 
@@ -28,3 +28,4 @@ Setting
 3. 联系我们
 4. 写评论
 5. 版本号
+6. 清除所有数据

@@ -43,7 +43,27 @@ const useTimerList = () => {
     setTimerList(newTimerList);
   };
 
-  return [loading, timerList, error, addTimer, deleteTimer];
+  const editTimer = async (id, newTimer) => {
+    for (let timer of timerList) {
+      if (timer.name === newTimer.name && id !== timer.id)
+        throw "Timer name exists!";
+    }
+    newTimer.id = id;
+    let newTimerList = [];
+    let found = false;
+    for (let timer of timerList) {
+      if (timer.id !== id) newTimerList.push(timer);
+      else {
+        found = true;
+        newTimerList.push(newTimer);
+      }
+    }
+    if (!found) throw "Nothing to update";
+    await AsyncStorage.setItem("TimerList", JSON.stringify(newTimerList));
+    setTimerList(newTimerList);
+  };
+
+  return [loading, timerList, error, addTimer, deleteTimer, editTimer];
 };
 
 export default useTimerList;

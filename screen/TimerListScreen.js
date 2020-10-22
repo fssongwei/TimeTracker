@@ -13,16 +13,15 @@ import useTimerList from "../hooks/useTimerList";
 import { add } from "react-native-reanimated";
 
 const TimerScreen = (props) => {
-  const [loading, timerList, error, addTimer, deleteTimer] = useTimerList();
+  const [
+    loading,
+    timerList,
+    error,
+    addTimer,
+    deleteTimer,
+    editTimer,
+  ] = useTimerList();
   if (loading) return null;
-  try {
-    deleteTimer({
-      name: "test2",
-      color: "yello",
-    });
-  } catch (error) {}
-
-  console.log(timerList);
 
   return (
     <View style={styles.screen}>
@@ -32,11 +31,36 @@ const TimerScreen = (props) => {
           name="plus"
           size="lg"
           color="#000"
-          onPress={() => props.navigation.navigate("Create")}
+          onPress={() =>
+            props.navigation.navigate("Create", {
+              mode: "new",
+              addTimer: addTimer,
+            })
+          }
         />
       </View>
       <ScrollView>
-        <Tracker onTrackerPress={() => props.navigation.navigate("Timer")} />
+        {timerList.map((timer) => {
+          return (
+            <Tracker
+              key={timer.id}
+              timer={timer}
+              onTrackerPress={() =>
+                props.navigation.navigate("Timer", { timer: timer })
+              }
+              onDelete={() => {
+                deleteTimer(timer.id);
+              }}
+              onEdit={() => {
+                props.navigation.navigate("Create", {
+                  mode: "edit",
+                  editTimer: editTimer,
+                  oldTimer: timer,
+                });
+              }}
+            />
+          );
+        })}
       </ScrollView>
     </View>
   );

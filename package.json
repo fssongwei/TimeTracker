@@ -24,10 +24,11 @@
     "react-native-safe-area-context": "3.1.4",
     "react-native-screens": "~2.10.1",
     "react-native-slider-color-picker": "^2.2.1",
+    "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
     "react-native-ultimate-listview": "^3.3.0",
     "react-native-web": "~0.13.7",
-    "react-native-svg": "12.1.0"
+    "@react-native-community/picker": "1.6.6"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

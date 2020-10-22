@@ -1,13 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Icon } from "@ant-design/react-native";
+import ColorCard from "../components/ColorCard";
 
 const TrendGroup = () => {
   return (
     <View>
       <Text style={styles.title}>Trend</Text>
 
-      <View style={styles.card}>
+      <ColorCard color="steelblue">
         <Icon name="up-circle" size={50} />
         <View style={{ paddingLeft: 20 }}>
           <Text style={styles.cardLabel}>Learning</Text>
@@ -16,9 +17,9 @@ const TrendGroup = () => {
             <Text style={{ color: "white" }}>Hours / Day</Text>
           </View>
         </View>
-      </View>
+      </ColorCard>
 
-      <View style={{ ...styles.card, backgroundColor: "lightgreen" }}>
+      <ColorCard color="lightgreen">
         <Icon name="down-circle" size={50} />
         <View style={{ paddingLeft: 20 }}>
           <Text style={styles.cardLabel}>Learning</Text>
@@ -27,9 +28,9 @@ const TrendGroup = () => {
             <Text style={{ color: "white" }}>Hours / Day</Text>
           </View>
         </View>
-      </View>
+      </ColorCard>
 
-      <View style={{ ...styles.card, backgroundColor: "pink" }}>
+      <ColorCard color="pink">
         <Icon name="down-circle" size={50} />
         <View style={{ paddingLeft: 20 }}>
           <Text style={styles.cardLabel}>Learning</Text>
@@ -38,7 +39,7 @@ const TrendGroup = () => {
             <Text style={{ color: "white" }}>Hours / Day</Text>
           </View>
         </View>
-      </View>
+      </ColorCard>
     </View>
   );
 };

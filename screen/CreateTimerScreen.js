@@ -10,38 +10,64 @@ import {
 import HeaderText from "../components/HeaderText";
 import IconButton from "../components/IconButton";
 import ColorSlider from "../components/ColorSlider";
+import { Toast } from "@ant-design/react-native";
 
 const CreateTimerScreen = (props) => {
-  const [timerName, setTimerName] = useState("");
+  const { mode, addTimer, editTimer, oldTimer } = props.route.params;
+  const [timerName, setTimerName] = useState(
+    mode === "new" ? "" : oldTimer.name
+  );
   const [complete, setComplete] = useState(false);
-  const [color, setColor] = useState("steelblue");
+  const [color, setColor] = useState(
+    mode === "new" ? "steelblue" : oldTimer.color
+  );
 
   useEffect(() => {
     setComplete(Boolean(timerName));
   }, [timerName]);
 
+  const onAdd = async () => {
+    try {
+      await addTimer({
+        name: timerName,
+        color: color,
+      });
+      props.navigation.navigate("Home");
+    } catch (error) {
+      Toast.fail(error.toString());
+    }
+  };
+
+  const onEdit = async () => {
+    try {
+      await editTimer(oldTimer.id, {
+        name: timerName,
+        color: color,
+      });
+      props.navigation.navigate("Home");
+    } catch (error) {
+      Toast.fail(error.toString());
+    }
+  };
+
   return (
     <TouchableOpacity style={styles.screen} onPress={() => Keyboard.dismiss()}>
       <View style={styles.header}>
-        <HeaderText>New</HeaderText>
+        <HeaderText>{mode === "new" ? "New" : "Edit"}</HeaderText>
         <View style={styles.buttonGroup}>
           <IconButton
             name="close"
             size="lg"
             color="#000"
             onPress={() => props.navigation.navigate("Home")}
-          >
-            Back
-          </IconButton>
+          />
           {complete && (
             <IconButton
               name="check"
               size="lg"
               color="#000"
-              onPress={() => props.navigation.navigate("Home")}
-            >
-              Back
-            </IconButton>
+              onPress={mode === "new" ? onAdd : onEdit}
+            />
           )}
         </View>
       </View>

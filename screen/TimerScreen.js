@@ -3,13 +3,16 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import { Toast } from "@ant-design/react-native";
 import IconButton from "../components/IconButton";
 import Timer from "../components/Timer";
+import useRecord from "../hooks/useRecord";
 
 const TimerScreen = (props) => {
   const [timerSwitch, setTimerSwitch] = useState(false);
   const [startTime, setStartTime] = useState(null);
+  const timer = props.route.params.timer;
+  const { addRecord } = useRecord();
 
   return (
-    <View style={styles.screen}>
+    <View style={{ ...styles.screen, backgroundColor: timer.color }}>
       <View style={{ alignItems: "flex-end", padding: 20, height: 80 }}>
         {!timerSwitch && (
           <IconButton
@@ -37,10 +40,18 @@ const TimerScreen = (props) => {
             if (!timerSwitch) {
               setStartTime(new Date());
             } else {
-              let duration = (new Date() - startTime) / 1000;
+              let endTime = new Date();
+              let duration = (endTime - startTime) / 1000;
               console.log(duration);
-              if (duration < 60) {
+              if (duration < 5) {
                 Toast.fail("Duration is not enough to be recorded");
+              } else {
+                addRecord({
+                  timerId: timer.id,
+                  startTime: startTime,
+                  endTime: endTime,
+                });
+                // console.log(recordList);
               }
             }
             setTimerSwitch(!timerSwitch);

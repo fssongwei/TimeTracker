@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Text, View, Dimensions, StyleSheet } from "react-native";
 import { PieChart } from "react-native-svg-charts";
 import { Button } from "@ant-design/react-native";
+import NavigationContext from "../hooks/NavigationContext";
 
-const PieChartWithDynamicSlices = () => {
+const PieChartWithDynamicSlices = (props) => {
+  const navigation = useContext(NavigationContext);
+
   const [selectedSlice, setSelectedSlice] = useState({
     label: "Total",
     value: "100",
@@ -65,24 +68,41 @@ const PieChartWithDynamicSlices = () => {
         </Text>
       </View>
 
-      <Button
-        type="primary"
-        size="small"
-        style={{
-          backgroundColor: "steelblue",
-          //   width: "10%",
-          alignSelf: "flex-end",
-          marginRight: 20,
-          marginTop: -50,
-        }}
-        onPress={() => {
-          setIsPrecentage(!isPrecentage);
-        }}
-      >
-        {isPrecentage ? "%" : "value"}
-      </Button>
+      <View style={styles.buttonGroup}>
+        <Button
+          type="primary"
+          size="small"
+          style={styles.button}
+          onPress={() => navigation.navigate("Record")}
+        >
+          Records
+        </Button>
+
+        <Button
+          type="primary"
+          size="small"
+          style={styles.button}
+          onPress={() => {
+            setIsPrecentage(!isPrecentage);
+          }}
+        >
+          {isPrecentage ? "%" : "value"}
+        </Button>
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonGroup: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+    marginTop: -50,
+  },
+  button: {
+    backgroundColor: "steelblue",
+  },
+});
 
 export default PieChartWithDynamicSlices;

@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TimerNavigator from "../navigations/TimerNavigator";
-import AnalysisScreen from "../screen/AnalysisScreen";
+import AnalysisNavigator from "../navigations/AnalysisNavigator";
 import SettingScreen from "../screen/SettingScreen";
 import { Icon } from "@ant-design/react-native";
 
@@ -31,7 +31,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Analysis"
-        component={AnalysisScreen}
+        component={AnalysisNavigator}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
