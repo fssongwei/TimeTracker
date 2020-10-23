@@ -3,6 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import AnalysisScreen from "../screen/AnalysisScreen";
 import RecordScreen from "../screen/RecordScreen";
+import Filter from "../groups/Filter";
+import Calendar from "../groups/Calendar";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +22,8 @@ const AnalysisNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Record" component={RecordScreen} />
+      <Stack.Screen name="Filter" component={Filter} />
+      <Stack.Screen name="Calendar" component={Calendar} />
     </Stack.Navigator>
   );
 };

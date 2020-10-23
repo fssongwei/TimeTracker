@@ -1,10 +1,14 @@
 import { AsyncStorage } from "react-native";
 import { useState, useEffect } from "react";
+import moment from "moment";
+import useTimerList from "./useTimerList";
 
 const useRecord = () => {
   const [recordList, setRecordList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { getTimerById } = useTimerList();
+
   useEffect(() => {
     const fetchRecordList = async () => {
       try {
@@ -23,7 +27,6 @@ const useRecord = () => {
       recordList.length > 0 ? recordList[recordList.length - 1].id + 1 : 0;
     newRecord.id = id;
     let newRecordList = [...recordList, newRecord];
-    console.log(newRecordList);
     await AsyncStorage.setItem("RecordList", JSON.stringify(newRecordList));
     setRecordList(newRecordList);
   };
@@ -63,8 +66,24 @@ const useRecord = () => {
   const getRecordsOnDate = (date) => {
     let newRecordList = [];
     for (let record of recordList) {
-      if (record.startTime.toDateString() === date.toDateString())
+      if (moment(record.startTime).format("YYYY-MM-DD") === date) {
+        record.timer = getTimerById(record.timerId);
         newRecordList.push(record);
+      }
+    }
+    return newRecordList;
+  };
+
+  const getRecordsOnDateAndTimerId = (date, timerId) => {
+    let newRecordList = [];
+    for (let record of recordList) {
+      if (
+        moment(record.startTime).format("YYYY-MM-DD") === date &&
+        (timerId === null || record.timerId === timerId)
+      ) {
+        record.timer = getTimerById(record.timerId);
+        newRecordList.push(record);
+      }
     }
     return newRecordList;
   };
@@ -88,6 +107,7 @@ const useRecord = () => {
     getRecordsWithTimerId,
     getRecordsOnDate,
     getRecordsWithinRange,
+    getRecordsOnDateAndTimerId,
   };
 };
 

@@ -13,14 +13,13 @@ import useTimerList from "../hooks/useTimerList";
 import { add } from "react-native-reanimated";
 
 const TimerScreen = (props) => {
-  const [
+  const {
     loading,
     timerList,
-    error,
     addTimer,
     deleteTimer,
     editTimer,
-  ] = useTimerList();
+  } = useTimerList();
   if (loading) return null;
 
   return (
@@ -76,11 +75,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    margin: 20,
-  },
-  title: {
-    fontSize: 40,
-    fontWeight: "600",
     margin: 20,
   },
 });

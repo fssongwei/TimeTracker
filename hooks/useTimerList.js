@@ -63,7 +63,22 @@ const useTimerList = () => {
     setTimerList(newTimerList);
   };
 
-  return [loading, timerList, error, addTimer, deleteTimer, editTimer];
+  const getTimerById = (id) => {
+    for (let timer of timerList) {
+      if (id === timer.id) return timer;
+    }
+    throw "Id not found!";
+  };
+
+  return {
+    loading,
+    timerList,
+    error,
+    addTimer,
+    deleteTimer,
+    editTimer,
+    getTimerById,
+  };
 };
 
 export default useTimerList;
