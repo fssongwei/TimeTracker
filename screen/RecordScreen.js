@@ -1,12 +1,12 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-// import { Picker } from "@react-native-community/picker";
 import ColorCard from "../components/ColorCard";
-import { Picker, Button, Icon } from "@ant-design/react-native";
-import useTimerList from "../hooks/useTimerList";
+import { Button, Icon } from "@ant-design/react-native";
 import IconButton from "../components/IconButton";
 import moment from "moment";
 import useRecord from "../hooks/useRecord";
+import { useSelector } from "react-redux";
+import useTimer from "../hooks/useTimer";
 
 const formatTime = (seconds) => {
   let timeValue = seconds;
@@ -27,15 +27,18 @@ const formatTime = (seconds) => {
 };
 
 const RecordCard = ({ record }) => {
+  const timer = useTimer(record.timerId);
+
   let duration = (moment(record.endTime) - moment(record.startTime)) / 1000;
   const { timeValue, unit } = formatTime(duration);
 
   let startTime = moment(record.startTime).format("hh:mm A");
   let endTime = moment(record.endTime).format("hh:mm A");
 
+  if (timer === null) return null;
   return (
     <ColorCard
-      color={record.timer.color}
+      color={timer.color}
       round
       style={{ width: "96%", marginHorizontal: "2%", marginVertical: 5 }}
     >
@@ -47,7 +50,7 @@ const RecordCard = ({ record }) => {
         }}
       >
         <View>
-          <Text style={styles.cardLabel}>{record.timer.name}</Text>
+          <Text style={styles.cardLabel}>{timer.name}</Text>
           <View style={{ flexDirection: "row", alignItems: "baseline" }}>
             <Text style={{ color: "white", fontSize: 40 }}>{timeValue}</Text>
             <Text style={{ color: "white" }}>{unit}</Text>
@@ -105,20 +108,23 @@ const SummaryCard = ({ records }) => {
   );
 };
 
-const RecordScreen = (props) => {
+const RecordScreen = ({ navigation, route }) => {
+  const timers = useSelector((state) => state.timers);
   const [selectedTimer, setSelectedTimer] = useState({
     name: "All",
     value: null,
   });
-  const { timerList } = useTimerList();
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format("YYYY-MM-DD")
+  );
 
   const filterData = [{ name: "All", value: null }];
-  for (let timer of timerList)
+  for (let timer of timers)
     filterData.push({ name: timer.name, value: timer.id });
 
   // Header Filter Button
   useLayoutEffect(() => {
-    props.navigation.setOptions({
+    navigation.setOptions({
       headerRight: () => (
         <Button
           style={{
@@ -126,7 +132,7 @@ const RecordScreen = (props) => {
             backgroundColor: "transparent",
           }}
           onPress={() => {
-            props.navigation.navigate("Filter", {
+            navigation.navigate("Filter", {
               data: filterData,
               select: selectedTimer,
             });
@@ -137,32 +143,18 @@ const RecordScreen = (props) => {
         </Button>
       ),
     });
-  }, [props.navigation, timerList, selectedTimer]);
+  }, [selectedTimer]);
 
-  // Keep Track of selectedTimer
+  // Keep Track of selectedTimer & selectedDate
+  const { params } = route;
   useEffect(() => {
-    if (props.route.params && props.route.params.select) {
-      setSelectedTimer(props.route.params.select);
-    }
-  }, [props.route.params]);
-
-  // Keep Track of Calendar
-  const [selectedDate, setSelectedDate] = useState(
-    moment().format("YYYY-MM-DD")
-  );
-  useEffect(() => {
-    if (props.route.params && props.route.params.selectedDate) {
-      setSelectedDate(props.route.params.selectedDate);
-    }
-  }, [props.route.params]);
+    if (!params) return;
+    if (params.selectedTimer) setSelectedTimer(params.selectedTimer);
+    if (params.selectedDate) setSelectedDate(params.selectedDate);
+  }, [params]);
 
   // Keep Track of Record
-  const {
-    recordList,
-    loading,
-    getRecordsOnDate,
-    getRecordsOnDateAndTimerId,
-  } = useRecord();
+  const { recordList, loading, getRecordsOnDateAndTimerId } = useRecord();
   const [records, setRecords] = useState([]);
   useEffect(() => {
     if (loading) return;
@@ -195,7 +187,7 @@ const RecordScreen = (props) => {
           size="lg"
           color="black"
           onPress={() => {
-            props.navigation.navigate("Calendar", {
+            navigation.navigate("Calendar", {
               selectedDate: selectedDate,
             });
           }}

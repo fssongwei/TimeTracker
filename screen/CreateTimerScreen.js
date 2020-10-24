@@ -11,9 +11,12 @@ import HeaderText from "../components/HeaderText";
 import IconButton from "../components/IconButton";
 import ColorSlider from "../components/ColorSlider";
 import { Toast } from "@ant-design/react-native";
+import { useDispatch } from "react-redux";
+import { addTimer, editTimer } from "../actions/timersAction";
 
-const CreateTimerScreen = (props) => {
-  const { mode, addTimer, editTimer, oldTimer } = props.route.params;
+const CreateTimerScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch();
+  const { mode, oldTimer } = route.params;
   const [timerName, setTimerName] = useState(
     mode === "new" ? "" : oldTimer.name
   );
@@ -28,11 +31,13 @@ const CreateTimerScreen = (props) => {
 
   const onAdd = async () => {
     try {
-      await addTimer({
-        name: timerName,
-        color: color,
-      });
-      props.navigation.navigate("Home");
+      dispatch(
+        addTimer({
+          name: timerName,
+          color: color,
+        })
+      );
+      navigation.navigate("Home");
     } catch (error) {
       Toast.fail(error.toString());
     }
@@ -40,11 +45,14 @@ const CreateTimerScreen = (props) => {
 
   const onEdit = async () => {
     try {
-      await editTimer(oldTimer.id, {
-        name: timerName,
-        color: color,
-      });
-      props.navigation.navigate("Home");
+      dispatch(
+        editTimer({
+          id: oldTimer.id,
+          name: timerName,
+          color: color,
+        })
+      );
+      navigation.navigate("Home");
     } catch (error) {
       Toast.fail(error.toString());
     }
@@ -59,7 +67,7 @@ const CreateTimerScreen = (props) => {
             name="close"
             size="lg"
             color="#000"
-            onPress={() => props.navigation.navigate("Home")}
+            onPress={() => navigation.navigate("Home")}
           />
           {complete && (
             <IconButton

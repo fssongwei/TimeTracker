@@ -1,26 +1,18 @@
-import React from "react";
-import {
-  View,
-  ScrollView,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import React, { useEffect } from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
 import Tracker from "../components/Tracker";
 import IconButton from "../components/IconButton";
 import HeaderText from "../components/HeaderText";
-import useTimerList from "../hooks/useTimerList";
-import { add } from "react-native-reanimated";
+import { fetchTimers, deleteTimer } from "../actions/timersAction";
+import { useDispatch, useSelector } from "react-redux";
 
-const TimerScreen = (props) => {
-  const {
-    loading,
-    timerList,
-    addTimer,
-    deleteTimer,
-    editTimer,
-  } = useTimerList();
-  if (loading) return null;
+const TimerScreen = ({ navigation }) => {
+  const timers = useSelector((state) => state.timers);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchTimers());
+  }, []);
 
   return (
     <View style={styles.screen}>
@@ -31,29 +23,27 @@ const TimerScreen = (props) => {
           size="lg"
           color="#000"
           onPress={() =>
-            props.navigation.navigate("Create", {
+            navigation.navigate("Create", {
               mode: "new",
-              addTimer: addTimer,
             })
           }
         />
       </View>
       <ScrollView>
-        {timerList.map((timer) => {
+        {timers.map((timer) => {
           return (
             <Tracker
               key={timer.id}
               timer={timer}
               onTrackerPress={() =>
-                props.navigation.navigate("Timer", { timer: timer })
+                navigation.navigate("Timer", { timer: timer })
               }
               onDelete={() => {
-                deleteTimer(timer.id);
+                dispatch(deleteTimer(timer.id));
               }}
               onEdit={() => {
-                props.navigation.navigate("Create", {
+                navigation.navigate("Create", {
                   mode: "edit",
-                  editTimer: editTimer,
                   oldTimer: timer,
                 });
               }}

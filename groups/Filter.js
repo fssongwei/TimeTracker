@@ -11,9 +11,10 @@ const Filter = (props) => {
         {data.map((item) => {
           return (
             <Item
+              key={item.value}
               extra={select === item ? "✓" : ""}
               onPress={() => {
-                props.navigation.navigate("Record", { select: item });
+                props.navigation.navigate("Record", { selectedTimer: item });
               }}
             >
               {item.name}

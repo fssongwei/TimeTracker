@@ -1,13 +1,11 @@
 import { AsyncStorage } from "react-native";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import useTimerList from "./useTimerList";
 
 const useRecord = () => {
   const [recordList, setRecordList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { getTimerById } = useTimerList();
 
   useEffect(() => {
     const fetchRecordList = async () => {
@@ -67,7 +65,6 @@ const useRecord = () => {
     let newRecordList = [];
     for (let record of recordList) {
       if (moment(record.startTime).format("YYYY-MM-DD") === date) {
-        record.timer = getTimerById(record.timerId);
         newRecordList.push(record);
       }
     }
@@ -81,7 +78,6 @@ const useRecord = () => {
         moment(record.startTime).format("YYYY-MM-DD") === date &&
         (timerId === null || record.timerId === timerId)
       ) {
-        record.timer = getTimerById(record.timerId);
         newRecordList.push(record);
       }
     }
