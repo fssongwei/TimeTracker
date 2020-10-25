@@ -2,25 +2,34 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import HeaderText from "../components/HeaderText";
 import { List } from "@ant-design/react-native";
-import { AsyncStorage } from "react-native";
-
-const onClear = async () => {
-  try {
-    await AsyncStorage.setItem("TimerList", JSON.stringify([]));
-    await AsyncStorage.setItem("RecordList", JSON.stringify([]));
-    console.log(true);
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { clearAll } from "../actions";
+import { useDispatch } from "react-redux";
+import { Modal, Toast } from "@ant-design/react-native";
 
 const SettingScreen = () => {
+  const dispatch = useDispatch();
+
+  const onClear = () => {
+    dispatch(clearAll());
+    Toast.success("Clear success!");
+  };
+
+  const onClearComfirm = () => {
+    Modal.alert("Are you sure?", "This operation could not be reverted.", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      { text: "Delete", onPress: onClear },
+    ]);
+  };
+
   return (
     <View style={styles.screen}>
       <HeaderText style={{ margin: 20 }}>Setting</HeaderText>
       <ScrollView>
         <List>
-          <List.Item onPress={onClear}>Clear All Data</List.Item>
+          <List.Item onPress={onClearComfirm}>Clear All Data</List.Item>
         </List>
       </ScrollView>
     </View>

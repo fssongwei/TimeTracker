@@ -54,6 +54,7 @@ const TimerScreen = (props) => {
                     endTime: endTime,
                   })
                 );
+                Toast.success("Record has been added!");
               }
             }
             setTimerSwitch(!timerSwitch);

@@ -27,32 +27,32 @@ const Tracker = ({ timer, onTrackerPress, onDelete, onEdit }) => {
     {
       text: "Edit",
       onPress: onEdit,
-      style: { backgroundColor: "grey", color: "white" },
+      style: { backgroundColor: "#3498DB", color: "white" },
     },
     {
       text: "Delete",
       onPress: onDeleteConfirm,
-      style: { backgroundColor: "orange", color: "white" },
+      style: { backgroundColor: "#E67E22", color: "white" },
     },
   ];
-  const left = [
-    {
-      text: "Read",
-      onPress: () => console.log("read"),
-      style: { backgroundColor: "blue", color: "white" },
-    },
-    {
-      text: "Reply",
-      onPress: () => console.log("reply"),
-      style: { backgroundColor: "green", color: "white" },
-    },
-  ];
+  // const left = [
+  //   {
+  //     text: "Read",
+  //     onPress: () => console.log("read"),
+  //     style: { backgroundColor: "blue", color: "white" },
+  //   },
+  //   {
+  //     text: "Reply",
+  //     onPress: () => console.log("reply"),
+  //     style: { backgroundColor: "green", color: "white" },
+  //   },
+  // ];
   return (
     <SwipeAction
       autoClose
       style={{ backgroundColor: timer.color }}
       right={right}
-      left={left}
+      // left={left}
     >
       <TouchableOpacity
         style={{ ...styles.card, backgroundColor: timer.color }}

@@ -7,6 +7,8 @@ const timerReducer = (state = [], action) => {
   ) {
     return action.payload.timers;
   }
+
+  if (action.type === "CLEAR_ALL") return [];
   return state;
 };
 

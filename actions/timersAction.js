@@ -1,4 +1,5 @@
 import { AsyncStorage } from "react-native";
+import { deleteRecordWithTimerId } from "../actions/recordsAction";
 
 export const fetchTimers = () => async (dispatch) => {
   try {
@@ -18,6 +19,7 @@ export const fetchTimers = () => async (dispatch) => {
 export const deleteTimer = (id) => async (dispatch, getState) => {
   try {
     // delete records of this timer
+    dispatch(deleteRecordWithTimerId(id));
 
     let timers = getState().timers;
     let newTimers = [];

@@ -1,16 +1,15 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import ColorCard from "../components/ColorCard";
-import { Button, Icon } from "@ant-design/react-native";
 import IconButton from "../components/IconButton";
 import moment from "moment";
-import useRecord from "../hooks/useRecord";
 import { useSelector } from "react-redux";
 import useTimer from "../hooks/useTimer";
 import useRecords from "../hooks/useRecords";
 import HeaderText from "../components/HeaderText";
+import { SwipeAction, Modal } from "@ant-design/react-native";
+import { deleteRecord } from "../actions/recordsAction";
 
-const RecordCard = ({ record }) => {
+const RecordCard = ({ record, onDelete }) => {
   const { timer } = useTimer(record.timerId);
 
   let duration = (moment(record.endTime) - moment(record.startTime)) / 1000;
@@ -20,20 +19,47 @@ const RecordCard = ({ record }) => {
   let endTime = moment(record.endTime).format("hh:mm A");
 
   if (timer === null) return null;
+
+  const onDeleteConfirm = () => {
+    Modal.alert("Are you sure?", "This operation can not be reverted.", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      { text: "Delete", onPress: onDelete },
+    ]);
+  };
+
+  const right = [
+    {
+      text: "Delete",
+      onPress: onDeleteConfirm,
+      style: { backgroundColor: "#E67E22", color: "white" },
+    },
+  ];
+
   return (
-    <ColorCard
-      color={timer.color}
-      round
-      style={{ width: "96%", marginHorizontal: "2%", marginVertical: 5 }}
+    <SwipeAction
+      autoClose
+      style={{
+        backgroundColor: timer.color,
+        width: "96%",
+        marginHorizontal: "2%",
+        marginVertical: 5,
+        flex: 1,
+        borderRadius: 10,
+      }}
+      right={right}
     >
       <View
         style={{
-          width: "100%",
           flexDirection: "row",
           justifyContent: "space-between",
+          height: 100,
+          padding: 15,
         }}
       >
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.cardLabel}>{timer.name}</Text>
           <View style={{ flexDirection: "row", alignItems: "baseline" }}>
             <Text style={{ color: "white", fontSize: 40 }}>{timeValue}</Text>
@@ -45,7 +71,7 @@ const RecordCard = ({ record }) => {
           <Text style={{ color: "#fff" }}>{`${startTime} - ${endTime}`}</Text>
         </View>
       </View>
-    </ColorCard>
+    </SwipeAction>
   );
 };
 
@@ -95,6 +121,7 @@ const SummaryCard = ({ records }) => {
 const HeaderButtonGroups = ({
   onFilterPress,
   onCalendarPress,
+  onAddRecordPress,
   selectedTimer,
 }) => {
   const { timer, changeTimer } = useTimer(
@@ -111,11 +138,16 @@ const HeaderButtonGroups = ({
         <IconButton
           name="filter"
           size="lg"
-          style={{ paddingRight: 20 }}
           onPress={onFilterPress}
           color={timer !== null ? timer.color : "#000"}
         />
-        <IconButton name="calendar" size="lg" onPress={onCalendarPress} />
+        <IconButton
+          name="calendar"
+          size="lg"
+          onPress={onCalendarPress}
+          style={{ paddingHorizontal: 20 }}
+        />
+        <IconButton name="plus" size="lg" onPress={onAddRecordPress} />
       </View>
     </View>
   );
@@ -163,42 +195,55 @@ const RecordScreen = ({ navigation, route }) => {
     });
   };
 
+  const onAddRecordPress = () => {
+    navigation.navigate("Add Record", { mode: "add" });
+  };
+
   return (
     <View style={styles.screen}>
       <HeaderButtonGroups
         onFilterPress={onFilterPress}
         onCalendarPress={onCalendarPress}
         selectedTimer={selectedTimer}
+        onAddRecordPress={onAddRecordPress}
       />
 
-      <View
-        style={{
-          marginTop: 20,
-          width: "100%",
-          paddingHorizontal: 15,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={{ fontSize: 25, fontWeight: "600" }}>
-          {moment().format("YYYY-MM-DD") === selectedDate
-            ? "Today"
-            : moment(selectedDate, "YYYY-MM-DD").format("MMM Do, YYYY")}
-        </Text>
-      </View>
-
-      {records.length > 0 && <SummaryCard records={records} />}
-
-      {records.length === 0 && (
-        <View>
-          <Text style={{ marginVertical: 50 }}>No Record</Text>
+      <ScrollView style={{ width: "100%" }}>
+        <View
+          style={{
+            marginTop: 20,
+            width: "100%",
+            paddingHorizontal: 15,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <Text style={{ fontSize: 25, fontWeight: "600" }}>
+            {moment().format("YYYY-MM-DD") === selectedDate
+              ? "Today"
+              : moment(selectedDate, "YYYY-MM-DD").format("MMM Do, YYYY")}
+          </Text>
         </View>
-      )}
 
-      <ScrollView>
+        {records.length > 0 && <SummaryCard records={records} />}
+
+        {records.length === 0 && (
+          <View style={{ width: "100%", alignItems: "center" }}>
+            <Text style={{ marginVertical: 50 }}>No Record</Text>
+          </View>
+        )}
+
         {records.map((record) => {
-          return <RecordCard record={record} key={record.id} />;
+          return (
+            <RecordCard
+              record={record}
+              key={record.id}
+              onDelete={() => {
+                dispatch(deleteRecord(record.id));
+              }}
+            />
+          );
         })}
       </ScrollView>
     </View>
@@ -244,5 +289,6 @@ const formatTime = (seconds) => {
   return {
     timeValue: timeValue,
     unit: unit,
+    toString: timeValue + " " + unit,
   };
 };

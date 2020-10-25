@@ -35,3 +35,38 @@ export const addRecord = (newRecord) => async (dispatch, getState) => {
     },
   });
 };
+
+export const deleteRecord = (id) => async (dispatch, getState) => {
+  let records = getState().records;
+  let newRecords = [];
+  for (let record of records) {
+    if (record.id !== id) newRecords.push(record);
+  }
+  await AsyncStorage.setItem("RecordList", JSON.stringify(newRecords));
+
+  dispatch({
+    type: "SET_RECORDS",
+    payload: {
+      records: newRecords,
+    },
+  });
+};
+
+export const deleteRecordWithTimerId = (timerId) => async (
+  dispatch,
+  getState
+) => {
+  let records = getState().records;
+  let newRecords = [];
+  for (let record of records) {
+    if (record.timerId !== timerId) newRecords.push(record);
+  }
+  await AsyncStorage.setItem("RecordList", JSON.stringify(newRecords));
+
+  dispatch({
+    type: "SET_RECORDS",
+    payload: {
+      records: newRecords,
+    },
+  });
+};
