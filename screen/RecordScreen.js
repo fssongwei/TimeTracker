@@ -7,27 +7,11 @@ import moment from "moment";
 import useRecord from "../hooks/useRecord";
 import { useSelector } from "react-redux";
 import useTimer from "../hooks/useTimer";
-
-const formatTime = (seconds) => {
-  let timeValue = seconds;
-  let unit = "Seconds";
-  if (Math.round(timeValue / 3600, -1) > 0) {
-    timeValue = Math.round(timeValue / 3600, -1);
-    unit = "Hours";
-  }
-  if (Math.round(timeValue / 60) > 0) {
-    timeValue = Math.round(timeValue / 60);
-    unit = "Minutes";
-  }
-  timeValue = Math.round(timeValue);
-  return {
-    timeValue: timeValue,
-    unit: unit,
-  };
-};
+import useRecords from "../hooks/useRecords";
+import HeaderText from "../components/HeaderText";
 
 const RecordCard = ({ record }) => {
-  const timer = useTimer(record.timerId);
+  const { timer } = useTimer(record.timerId);
 
   let duration = (moment(record.endTime) - moment(record.startTime)) / 1000;
   const { timeValue, unit } = formatTime(duration);
@@ -108,65 +92,85 @@ const SummaryCard = ({ records }) => {
   );
 };
 
+const HeaderButtonGroups = ({
+  onFilterPress,
+  onCalendarPress,
+  selectedTimer,
+}) => {
+  const { timer, changeTimer } = useTimer(
+    selectedTimer !== null ? selectedTimer.id : null
+  );
+  useEffect(() => {
+    changeTimer(selectedTimer !== null ? selectedTimer.id : null);
+  }, [selectedTimer]);
+
+  return (
+    <View style={styles.header}>
+      <HeaderText>Record</HeaderText>
+      <View style={{ flexDirection: "row" }}>
+        <IconButton
+          name="filter"
+          size="lg"
+          style={{ paddingRight: 20 }}
+          onPress={onFilterPress}
+          color={timer !== null ? timer.color : "#000"}
+        />
+        <IconButton name="calendar" size="lg" onPress={onCalendarPress} />
+      </View>
+    </View>
+  );
+};
+
 const RecordScreen = ({ navigation, route }) => {
   const timers = useSelector((state) => state.timers);
-  const [selectedTimer, setSelectedTimer] = useState({
-    name: "All",
-    value: null,
-  });
+  const [selectedTimer, setSelectedTimer] = useState(null);
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
   );
 
   const filterData = [{ name: "All", value: null }];
-  for (let timer of timers)
-    filterData.push({ name: timer.name, value: timer.id });
-
-  // Header Filter Button
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Button
-          style={{
-            borderColor: "transparent",
-            backgroundColor: "transparent",
-          }}
-          onPress={() => {
-            navigation.navigate("Filter", {
-              data: filterData,
-              select: selectedTimer,
-            });
-          }}
-        >
-          <Icon name="filter" size="xs" color="black" />
-          {selectedTimer.name}
-        </Button>
-      ),
-    });
-  }, [selectedTimer]);
+  for (let timer of timers) filterData.push({ name: timer.name, value: timer });
 
   // Keep Track of selectedTimer & selectedDate
   const { params } = route;
   useEffect(() => {
     if (!params) return;
-    if (params.selectedTimer) setSelectedTimer(params.selectedTimer);
+    if (params.selected) setSelectedTimer(params.selected.value);
     if (params.selectedDate) setSelectedDate(params.selectedDate);
   }, [params]);
 
   // Keep Track of Record
-  const { recordList, loading, getRecordsOnDateAndTimerId } = useRecord();
-  const [records, setRecords] = useState([]);
+  const { records, changeRecordsQuery } = useRecords(
+    selectedDate,
+    selectedTimer
+  );
   useEffect(() => {
-    if (loading) return;
-    const recordsResult = getRecordsOnDateAndTimerId(
-      selectedDate,
-      selectedTimer.value
-    );
-    setRecords(recordsResult);
-  }, [selectedTimer, selectedDate, recordList, loading]);
+    changeRecordsQuery(selectedDate, selectedTimer ? selectedTimer.id : null);
+  }, [selectedDate, selectedTimer]);
+
+  const onFilterPress = () => {
+    navigation.navigate("Filter", {
+      data: filterData,
+      select: selectedTimer
+        ? { name: selectedTimer.name, value: selectedTimer }
+        : { name: "All", value: null },
+    });
+  };
+
+  const onCalendarPress = () => {
+    navigation.navigate("Calendar", {
+      selectedDate: selectedDate,
+    });
+  };
 
   return (
     <View style={styles.screen}>
+      <HeaderButtonGroups
+        onFilterPress={onFilterPress}
+        onCalendarPress={onCalendarPress}
+        selectedTimer={selectedTimer}
+      />
+
       <View
         style={{
           marginTop: 20,
@@ -182,16 +186,6 @@ const RecordScreen = ({ navigation, route }) => {
             ? "Today"
             : moment(selectedDate, "YYYY-MM-DD").format("MMM Do, YYYY")}
         </Text>
-        <IconButton
-          name="calendar"
-          size="lg"
-          color="black"
-          onPress={() => {
-            navigation.navigate("Calendar", {
-              selectedDate: selectedDate,
-            });
-          }}
-        />
       </View>
 
       {records.length > 0 && <SummaryCard records={records} />}
@@ -216,11 +210,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
     alignItems: "center",
+    paddingTop: 50,
   },
   cardLabel: {
     fontSize: 20,
     color: "#fff",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 20,
+    width: "100%",
+  },
 });
 
 export default RecordScreen;
+
+// helper functions
+
+const formatTime = (seconds) => {
+  let timeValue = seconds;
+  let unit = "Seconds";
+  if (Math.round(timeValue / 3600, -1) > 0) {
+    timeValue = Math.round(timeValue / 3600, -1);
+    unit = "Hours";
+  }
+  if (Math.round(timeValue / 60) > 0) {
+    timeValue = Math.round(timeValue / 60);
+    unit = "Minutes";
+  }
+  timeValue = Math.round(timeValue);
+  return {
+    timeValue: timeValue,
+    unit: unit,
+  };
+};

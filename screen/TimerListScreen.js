@@ -4,20 +4,24 @@ import Tracker from "../components/Tracker";
 import IconButton from "../components/IconButton";
 import HeaderText from "../components/HeaderText";
 import { fetchTimers, deleteTimer } from "../actions/timersAction";
+import { fetchRecords } from "../actions/recordsAction";
+
 import { useDispatch, useSelector } from "react-redux";
 
 const TimerScreen = ({ navigation }) => {
   const timers = useSelector((state) => state.timers);
   const dispatch = useDispatch();
 
+  // Init the timers and records
   useEffect(() => {
     dispatch(fetchTimers());
+    dispatch(fetchRecords());
   }, []);
 
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <HeaderText style={styles.title}>Timer</HeaderText>
+        <HeaderText>Timer</HeaderText>
         <IconButton
           name="plus"
           size="lg"

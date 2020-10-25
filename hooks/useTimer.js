@@ -10,9 +10,20 @@ const useTimer = (id) => {
         setTimer(timer);
         return;
       }
+      setTimer(null);
     }
   }, [timers]);
-  return timer;
+
+  const changeTimer = (id) => {
+    for (let timer of timers) {
+      if (id === timer.id) {
+        setTimer(timer);
+        return;
+      }
+      setTimer(null);
+    }
+  };
+  return { timer, changeTimer };
 };
 
 export default useTimer;

@@ -17,12 +17,15 @@ export const fetchTimers = () => async (dispatch) => {
 
 export const deleteTimer = (id) => async (dispatch, getState) => {
   try {
+    // delete records of this timer
+
     let timers = getState().timers;
     let newTimers = [];
     for (let timer of timers) {
       if (timer.id !== id) newTimers.push(timer);
     }
     await AsyncStorage.setItem("TimerList", JSON.stringify(newTimers));
+
     dispatch({
       type: "DELETE_TIMERS",
       payload: {

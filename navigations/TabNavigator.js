@@ -1,6 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TimerNavigator from "../navigations/TimerNavigator";
+import RecordNavigator from "../navigations/RecordNavigator";
 import AnalysisNavigator from "../navigations/AnalysisNavigator";
 import SettingScreen from "../screen/SettingScreen";
 import { Icon } from "@ant-design/react-native";
@@ -23,6 +24,20 @@ const TabNavigator = () => {
             return (
               <Icon
                 name="clock-circle"
+                color={focused ? "steelblue" : "grey"}
+              />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Record"
+        component={RecordNavigator}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Icon
+                name="unordered-list"
                 color={focused ? "steelblue" : "grey"}
               />
             );

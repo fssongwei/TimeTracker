@@ -27,7 +27,7 @@ const Calendar = (props) => {
         showScrollIndicator={true}
         markedDates={markedDate(selectedDate)}
         onDayPress={(day) => {
-          props.navigation.navigate("Record", { selectedDate: day.dateString });
+          props.navigation.navigate("Main", { selectedDate: day.dateString });
         }}
       />
     </View>
