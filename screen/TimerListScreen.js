@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Text } from "react-native";
 import Tracker from "../components/Tracker";
 import IconButton from "../components/IconButton";
 import HeaderText from "../components/HeaderText";
@@ -33,6 +33,20 @@ const TimerScreen = ({ navigation }) => {
           }
         />
       </View>
+
+      {timers.length === 0 && (
+        <View
+          style={{
+            width: "100%",
+            height: 100,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text> No timer yet.</Text>
+        </View>
+      )}
+
       <ScrollView>
         {timers.map((timer) => {
           return (

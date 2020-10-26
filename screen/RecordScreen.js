@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import IconButton from "../components/IconButton";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import useTimer from "../hooks/useTimer";
 import useRecords from "../hooks/useRecords";
 import HeaderText from "../components/HeaderText";
 import { SwipeAction, Modal } from "@ant-design/react-native";
 import { deleteRecord } from "../actions/recordsAction";
+import formatTime from "../utilities/formatTime";
 
 const RecordCard = ({ record, onDelete }) => {
   const { timer } = useTimer(record.timerId);
@@ -154,6 +155,7 @@ const HeaderButtonGroups = ({
 };
 
 const RecordScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch();
   const timers = useSelector((state) => state.timers);
   const [selectedTimer, setSelectedTimer] = useState(null);
   const [selectedDate, setSelectedDate] = useState(
@@ -271,24 +273,3 @@ const styles = StyleSheet.create({
 });
 
 export default RecordScreen;
-
-// helper functions
-
-const formatTime = (seconds) => {
-  let timeValue = seconds;
-  let unit = "Seconds";
-  if (Math.round(timeValue / 3600, -1) > 0) {
-    timeValue = Math.round(timeValue / 3600, -1);
-    unit = "Hours";
-  }
-  if (Math.round(timeValue / 60) > 0) {
-    timeValue = Math.round(timeValue / 60);
-    unit = "Minutes";
-  }
-  timeValue = Math.round(timeValue);
-  return {
-    timeValue: timeValue,
-    unit: unit,
-    toString: timeValue + " " + unit,
-  };
-};

@@ -1,14 +1,24 @@
 /* tslint:disable:no-console */
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import {
-  Card,
-  List,
-  SwipeAction,
-  Modal,
-  WhiteSpace,
-} from "@ant-design/react-native";
+import { SwipeAction, Modal } from "@ant-design/react-native";
+import useRecords from "../hooks/useRecords";
+import moment from "moment";
+import formatTime from "../utilities/formatTime";
+
 const Tracker = ({ timer, onTrackerPress, onDelete, onEdit }) => {
+  const { records } = useRecords(moment().format("YYYY-MM-DD"), timer.id);
+  const [duration, setDuration] = useState({ timeValue: "", unit: "" }); //{ timeValue: "", unit: "" }
+  useEffect(() => {
+    let totalTime = 0;
+    for (let record of records) {
+      totalTime += moment(record.endTime) - moment(record.startTime);
+    }
+    totalTime /= 1000;
+    if (totalTime === 0) setDuration({ timeValue: "", unit: "" });
+    else setDuration(formatTime(totalTime));
+  }, [records]);
+
   const onDeleteConfirm = () => {
     Modal.alert(
       'Delete Timer "' + timer.name + '"',
@@ -60,8 +70,10 @@ const Tracker = ({ timer, onTrackerPress, onDelete, onEdit }) => {
       >
         <Text style={styles.cardLabel}>{timer.name}</Text>
         <View style={{ alignItems: "center" }}>
-          <Text style={{ color: "white", fontSize: 30 }}>58</Text>
-          <Text style={{ color: "white" }}>Minutes</Text>
+          <Text style={{ color: "white", fontSize: 30 }}>
+            {duration.timeValue}
+          </Text>
+          <Text style={{ color: "white" }}>{duration.unit}</Text>
         </View>
       </TouchableOpacity>
     </SwipeAction>
