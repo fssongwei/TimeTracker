@@ -10,6 +10,7 @@ import {
 import formatTime from "../utilities/formatTime";
 import { useSelector, useDispatch } from "react-redux";
 import { addRecord } from "../actions/recordsAction";
+import moment from "moment";
 
 const AddRecordScreen = ({ navigation }) => {
   const [selectedTimer, setSelectedTimer] = useState(null);
@@ -74,6 +75,7 @@ const AddRecordScreen = ({ navigation }) => {
           value={minTime}
           mode="time"
           defaultDate={
+            selectedDate ||
             new Date(Math.floor(new Date().getTime() / 60000) * 60000)
           }
           onChange={(time) => setMinTime(time)}
@@ -85,7 +87,10 @@ const AddRecordScreen = ({ navigation }) => {
         <DatePicker
           value={maxTime}
           mode="time"
-          defaultDate={new Date()}
+          defaultDate={
+            selectedDate ||
+            new Date(Math.floor(new Date().getTime() / 60000) * 60000)
+          }
           onChange={(time) => setMaxTime(time)}
           minDate={minTime ? new Date(minTime.getTime() + 60000) : null}
         >

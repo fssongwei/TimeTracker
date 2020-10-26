@@ -15,7 +15,21 @@ const useRecords = (date, timerId) => {
     let query = getRecordsOnDateAndTimerId(allRecords, date, timerId);
     setRecords(query);
   };
-  return { records, changeRecordsQuery };
+
+  const getRecordsWithinRange = (startDate, endDate) => {
+    let newRecords = [];
+    for (let record of allRecords) {
+      if (
+        moment(record.startTime).isAfter(moment(startDate)) &&
+        moment(record.startTime).isBefore(moment(endDate).add(1, "day"))
+      ) {
+        newRecords.push(record);
+      }
+    }
+    setRecords(newRecords);
+  };
+
+  return { records, changeRecordsQuery, getRecordsWithinRange };
 };
 
 const getRecordsOnDateAndTimerId = (records, date, timerId) => {
