@@ -2,11 +2,12 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Icon } from "@ant-design/react-native";
 import ColorCard from "../components/ColorCard";
+import HeaderText from "../components/HeaderText";
 
 const TrendGroup = () => {
   return (
-    <View>
-      <Text style={styles.title}>Trend</Text>
+    <View style={styles.group}>
+      <HeaderText style={styles.title}>Trend</HeaderText>
 
       <ColorCard color="steelblue">
         <Icon name="up-circle" size={50} />
@@ -45,9 +46,10 @@ const TrendGroup = () => {
 };
 
 const styles = StyleSheet.create({
+  group: {
+    marginVertical: 30,
+  },
   title: {
-    fontSize: 30,
-    fontWeight: "500",
     padding: 20,
   },
   card: {

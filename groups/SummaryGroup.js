@@ -5,7 +5,6 @@ import { SegmentedControl } from "@ant-design/react-native";
 import HeaderText from "../components/HeaderText";
 import moment from "moment";
 import IconButton from "../components/IconButton";
-import useRecords from "../hooks/useRecords";
 import { useSelector } from "react-redux";
 
 const DateLabel = ({ mode, range, onPrevious, onFuture }) => {
