@@ -33,6 +33,7 @@
     "react-native-svg-charts": "^5.4.0",
     "react-native-ultimate-listview": "^3.3.0",
     "react-native-web": "~0.13.7",
+    "react-native-webview": "^10.10.0",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0"

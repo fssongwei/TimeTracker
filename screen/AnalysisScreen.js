@@ -10,7 +10,6 @@ const AnalysisScreen = (props) => {
       <SummaryGroup />
       <RecordHeatMap />
       <TrendGroup />
-      <View style={{ height: 100 }}></View>
     </ScrollView>
   );
 };
