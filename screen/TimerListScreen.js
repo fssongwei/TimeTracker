@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { View, ScrollView, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, StyleSheet, Text, AsyncStorage } from "react-native";
 import Tracker from "../components/Tracker";
 import IconButton from "../components/IconButton";
 import HeaderText from "../components/HeaderText";
 import { fetchTimers, deleteTimer } from "../actions/timersAction";
 import { fetchRecords } from "../actions/recordsAction";
-
 import { useDispatch, useSelector } from "react-redux";
+import { Modal } from "@ant-design/react-native";
 
 const TimerScreen = ({ navigation }) => {
   const timers = useSelector((state) => state.timers);
@@ -16,6 +16,35 @@ const TimerScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(fetchTimers());
     dispatch(fetchRecords());
+
+    const fetchTimerStatus = async () => {
+      let timerStatus = await AsyncStorage.getItem("TimerStatus");
+      timerStatus = timerStatus ? JSON.parse(timerStatus) : {};
+      if (timerStatus.startTime) {
+        Modal.alert(
+          "Resume?",
+          "Do you want to resume your last unfinish timer?",
+          [
+            {
+              text: "Cancel",
+              onPress: () => {
+                AsyncStorage.setItem("TimerStatus", JSON.stringify({}));
+              },
+            },
+            {
+              text: "Start",
+              onPress: () => {
+                navigation.navigate("Timer", {
+                  timer: timerStatus.timer,
+                  startTime: timerStatus.startTime,
+                });
+              },
+            },
+          ]
+        );
+      }
+    };
+    fetchTimerStatus();
   }, []);
 
   return (

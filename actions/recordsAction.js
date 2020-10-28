@@ -3,7 +3,7 @@ import { AsyncStorage } from "react-native";
 export const fetchRecords = () => async (dispatch) => {
   try {
     let list = await AsyncStorage.getItem("RecordList");
-    if (list) list = JSON.parse(list);
+    list = list ? JSON.parse(list) : [];
     dispatch({
       type: "FETCH_RECORDS",
       payload: {

@@ -61,10 +61,10 @@ const RecordCard = ({ record, onDelete }) => {
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text style={styles.cardLabel}>{timer.name}</Text>
+          <Text style={{ ...styles.cardLabel, flex: 1 }}>{timer.name}</Text>
           <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-            <Text style={{ color: "white", fontSize: 40 }}>{timeValue}</Text>
-            <Text style={{ color: "white" }}>{unit}</Text>
+            <Text style={{ color: "#fff", fontSize: 40 }}>{timeValue}</Text>
+            <Text style={{ color: "#fff" }}>{unit}</Text>
           </View>
         </View>
 

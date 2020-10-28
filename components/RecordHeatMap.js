@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { ContributionGraph } from "react-native-chart-kit";
 import moment from "moment";
 
-const RecordHeatMap = () => {
+const RecordHeatMap = ({ onDayPress }) => {
   const records = useSelector((state) => state.records);
   const [commitsData, setCommitsData] = useState([]);
 
@@ -20,10 +20,7 @@ const RecordHeatMap = () => {
       newCommitsData.push({ date: key, count: value });
     }
     setCommitsData(newCommitsData);
-    console.log(newCommitsData);
   }, [records]);
-
-  console.log(Dimensions.get("window").width);
 
   return (
     <View style={{ width: "100%", alignItems: "center" }}>
@@ -43,6 +40,7 @@ const RecordHeatMap = () => {
           backgroundGradientTo: "#fff",
           color: (opacity = 1) => `rgba(65, 105, 225, ${opacity})`,
         }}
+        onDayPress={onDayPress}
       />
     </View>
   );

@@ -8,7 +8,7 @@ const AnalysisScreen = (props) => {
   return (
     <ScrollView style={styles.screen}>
       <SummaryGroup />
-      <RecordHeatMap />
+      {/* <RecordHeatMap /> */}
       <TrendGroup />
     </ScrollView>
   );

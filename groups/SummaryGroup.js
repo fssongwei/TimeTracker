@@ -6,6 +6,7 @@ import HeaderText from "../components/HeaderText";
 import moment from "moment";
 import IconButton from "../components/IconButton";
 import { useSelector } from "react-redux";
+import RecordHeatMap from "../components/RecordHeatMap";
 
 const DateLabel = ({ mode, range, onPrevious, onFuture }) => {
   let text = "";
@@ -79,6 +80,14 @@ const SummaryGroup = () => {
     });
   };
 
+  const onDayPress = (obj) => {
+    setCurrentMode("Day");
+    setRange({
+      startDate: obj.date,
+      endDate: moment(obj.date).add(1, "day").format("YYYY-MM-DD"),
+    });
+  };
+
   // Get Records Within Range
   const allRecords = useSelector((state) => state.records);
   const [records, setRecords] = useState([]);
@@ -113,6 +122,7 @@ const SummaryGroup = () => {
         onFuture={onFuture}
       />
       <PieChart records={records} />
+      <RecordHeatMap onDayPress={onDayPress} />
     </View>
   );
 };
