@@ -12,6 +12,7 @@ import { List } from "@ant-design/react-native";
 import { clearAll } from "../actions";
 import { useDispatch } from "react-redux";
 import { Modal, Toast } from "@ant-design/react-native";
+import * as StoreReview from "react-native-store-review";
 
 const SettingScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -56,6 +57,16 @@ const SettingScreen = ({ navigation }) => {
             }}
           >
             Terms Of Service
+          </List.Item>
+
+          <List.Item
+            onPress={() => {
+              if (StoreReview.isAvailable) {
+                StoreReview.requestReview();
+              }
+            }}
+          >
+            Leave A Review
           </List.Item>
         </List>
 

@@ -85,7 +85,7 @@ const PieChartWithDynamicSlices = ({ records }) => {
       value: values[index],
       svg: { fill: colors[index] },
       arc: {
-        outerRadius: 40 + values[index] + "%",
+        outerRadius: 100 + values[index] * 0.6 + "%",
         padAngle: label === key ? 0.1 : 0,
       },
       onPress: () =>
@@ -100,11 +100,11 @@ const PieChartWithDynamicSlices = ({ records }) => {
 
   return (
     <View>
-      <View style={{ justifyContent: "center" }}>
+      <View style={{ justifyContent: "center", width: "100%" }}>
         <PieChart
           style={{ height: deviceWidth }}
           outerRadius={"50%"}
-          innerRadius={"40%"}
+          innerRadius={"35%"}
           data={data}
         />
         <Text

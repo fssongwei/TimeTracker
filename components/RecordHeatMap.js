@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Dimensions } from "react-native";
 import { useSelector } from "react-redux";
 import { ContributionGraph } from "react-native-chart-kit";
 import moment from "moment";
@@ -23,8 +23,10 @@ const RecordHeatMap = () => {
     console.log(newCommitsData);
   }, [records]);
 
+  console.log(Dimensions.get("window").width);
+
   return (
-    <View>
+    <View style={{ width: "100%", alignItems: "center" }}>
       <ContributionGraph
         withDots={false}
         withShadow={false}
@@ -32,8 +34,8 @@ const RecordHeatMap = () => {
         withOuterLines={false}
         values={commitsData}
         endDate={new Date()}
-        numDays={110}
-        width={"100%"}
+        numDays={(Math.floor(Dimensions.get("window").width * 2) / 55) * 7 - 3}
+        width={Dimensions.get("window").width}
         height={220}
         chartConfig={{
           backgroundColor: "#fff",
